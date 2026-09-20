@@ -69,12 +69,21 @@ namespace EmployeeWorkFlowHub.Service.Services
             return result;
         }
 
-        public async Task<ResultArgs> CreateAsync(Project project, string userRole)
+        public async Task<ResultArgs> CreateAsync(Project project, string userRole, int currentEmployeeId)
         {
             if (!userRole.Equals(CommonVariable.RoleName.Manager, StringComparison.OrdinalIgnoreCase) &&
-                !userRole.Equals(CommonVariable.RoleName.Admin, StringComparison.OrdinalIgnoreCase))
+                !userRole.Equals(CommonVariable.RoleName.Admin, StringComparison.OrdinalIgnoreCase) &&
+                !userRole.Contains("Lead", StringComparison.OrdinalIgnoreCase))
             {
-                return new ResultArgs { StatusCode = 403, StatusMessage = "Only Managers can create projects." };
+                return new ResultArgs { StatusCode = 403, StatusMessage = "You do not have permission to create projects." };
+            }
+
+            if (userRole.Contains("Lead", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!project.ProjectManagerId.HasValue || project.ProjectManagerId <= 0)
+                {
+                    project.ProjectManagerId = currentEmployeeId;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(project.Name))
@@ -122,21 +131,29 @@ namespace EmployeeWorkFlowHub.Service.Services
             return await _projectRepository.UpdateAsync(project);
         }
 
-        public async Task<ResultArgs> DeleteAsync(int id, string userRole)
+        public async Task<ResultArgs> DeleteAsync(int id, string userRole, int currentEmployeeId)
         {
-            if (!userRole.Equals(CommonVariable.RoleName.Manager, StringComparison.OrdinalIgnoreCase) &&
-                !userRole.Equals(CommonVariable.RoleName.Admin, StringComparison.OrdinalIgnoreCase))
-            {
-                return new ResultArgs { StatusCode = 403, StatusMessage = "Only Managers can delete projects." };
-            }
-
             var existing = await _projectRepository.GetByIdAsync(id);
             if (existing == null)
             {
                 return new ResultArgs { StatusCode = 404, StatusMessage = $"Project with ID {id} was not found." };
             }
 
-            return await _projectRepository.DeleteAsync(id);
+            if (userRole.Equals(CommonVariable.RoleName.Manager, StringComparison.OrdinalIgnoreCase) ||
+                userRole.Equals(CommonVariable.RoleName.Admin, StringComparison.OrdinalIgnoreCase))
+            {
+                return await _projectRepository.DeleteAsync(id);
+            }
+            else if (userRole.Contains("Lead", StringComparison.OrdinalIgnoreCase))
+            {
+                if (existing.ProjectManagerId == currentEmployeeId)
+                {
+                    return await _projectRepository.DeleteAsync(id);
+                }
+                return new ResultArgs { StatusCode = 403, StatusMessage = "Team Leads can only delete projects they manage." };
+            }
+
+            return new ResultArgs { StatusCode = 403, StatusMessage = "You do not have permission to delete projects." };
         }
     }
 }

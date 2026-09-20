@@ -214,21 +214,33 @@ namespace EmployeeWorkFlowHub.Service.Services
             return await _taskRepository.UpdateAsync(existing);
         }
 
-        public async Task<ResultArgs> DeleteAsync(int id, string userRole)
+        public async Task<ResultArgs> DeleteAsync(int id, string userRole, int currentEmployeeId)
         {
-            if (!userRole.Equals(CommonVariable.RoleName.Manager, StringComparison.OrdinalIgnoreCase) &&
-                !userRole.Equals(CommonVariable.RoleName.Admin, StringComparison.OrdinalIgnoreCase))
-            {
-                return new ResultArgs { StatusCode = 403, StatusMessage = "Only Managers can delete tasks." };
-            }
-
             var existing = await _taskRepository.GetByIdAsync(id);
             if (existing == null)
             {
                 return new ResultArgs { StatusCode = 404, StatusMessage = $"Task with ID {id} was not found." };
             }
 
-            return await _taskRepository.DeleteAsync(id);
+            if (userRole.Equals(CommonVariable.RoleName.Manager, StringComparison.OrdinalIgnoreCase) ||
+                userRole.Equals(CommonVariable.RoleName.Admin, StringComparison.OrdinalIgnoreCase))
+            {
+                return await _taskRepository.DeleteAsync(id);
+            }
+            else if (userRole.Contains("Lead", StringComparison.OrdinalIgnoreCase))
+            {
+                if (existing.ProjectId.HasValue)
+                {
+                    var proj = await _projectRepository.GetByIdAsync(existing.ProjectId.Value);
+                    if (proj != null && proj.ProjectManagerId == currentEmployeeId)
+                    {
+                        return await _taskRepository.DeleteAsync(id);
+                    }
+                }
+                return new ResultArgs { StatusCode = 403, StatusMessage = "Team Leads can only delete tasks belonging to projects they lead." };
+            }
+
+            return new ResultArgs { StatusCode = 403, StatusMessage = "You do not have permission to delete tasks." };
         }
     }
 }

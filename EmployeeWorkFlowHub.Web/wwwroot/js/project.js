@@ -24,7 +24,7 @@ $(document).ready(function() {
 function applyRoleVisibility() {
     const $btnAdd = $('#btnAddProject');
     if ($btnAdd.length) {
-        if (isManager()) {
+        if (isManager() || isTeamLead()) {
             $btnAdd.removeClass('d-none').addClass('d-flex');
         } else {
             $btnAdd.addClass('d-none').removeClass('d-flex');
@@ -93,8 +93,8 @@ async function loadProjManagers() {
 
             cachedProjectEmployees = uniqueEmployees;
 
-            // Filter managers: Only employees with 'Manager' role
-            const managers = uniqueEmployees.filter(e => (e.role || '').toLowerCase().includes('manager'));
+            // Filter managers: employees with 'Manager' or 'Lead' role
+            const managers = uniqueEmployees.filter(e => (e.role || '').toLowerCase().includes('manager') || (e.role || '').toLowerCase().includes('lead'));
             // Filter team members: Only employees with 'Developer' role
             const developers = uniqueEmployees.filter(e => (e.role || '').toLowerCase().includes('developer'));
 
@@ -226,13 +226,21 @@ function renderProjectTable(projects) {
                     </button>
                 </div>`;
         } else if (userIsLead) {
-            // Team Lead: Edit own project only, no delete
-            actionsHtml = `
-                <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-primary px-2 py-1" onclick="openEditProjectModal(${p.id})" title="Edit Project">
-                        <i class="bi bi-pencil-square"></i>
-                    </button>
-                </div>`;
+            // Team Lead: Edit and Delete for project assigned to them
+            const currentEmpId = getEmployeeId();
+            if (p.projectManagerId === currentEmpId) {
+                actionsHtml = `
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary px-2 py-1" onclick="openEditProjectModal(${p.id})" title="Edit Project">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger px-2 py-1" onclick="promptDeleteProject(${p.id}, '${escapeAttr(p.name)}')" title="Delete Project">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>`;
+            } else {
+                actionsHtml = `<span class="badge bg-light text-secondary border">View Only</span>`;
+            }
         } else {
             actionsHtml = `<span class="badge bg-light text-secondary border">View Only</span>`;
         }
@@ -259,8 +267,8 @@ function renderProjectTable(projects) {
  * Prepares and displays modal for adding a new project.
  */
 function openAddProjectModal() {
-    if (!isManager()) {
-        showToast('Access Denied: Manager privileges required.', 'warning');
+    if (!isManager() && !isTeamLead()) {
+        showToast('Access Denied: You do not have permission to add projects.', 'warning');
         return;
     }
 
@@ -268,7 +276,11 @@ function openAddProjectModal() {
     $('#projectName').val('').removeClass('is-invalid');
     
     $('#projDeptId').val('').prop('disabled', false).removeClass('is-invalid');
-    $('#projManagerId').val('').prop('disabled', false).removeClass('is-invalid');
+    if (isTeamLead()) {
+        $('#projManagerId').val(getEmployeeId()).prop('disabled', false).removeClass('is-invalid');
+    } else {
+        $('#projManagerId').val('').prop('disabled', false).removeClass('is-invalid');
+    }
     $('#projStatus').val('').removeClass('is-invalid');
     $('#projStartDate').val('').removeClass('is-invalid');
     $('#projEndDate').val('').removeClass('is-invalid');

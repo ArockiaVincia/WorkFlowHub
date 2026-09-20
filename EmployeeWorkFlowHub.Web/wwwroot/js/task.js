@@ -382,8 +382,11 @@ function renderColumnCards(taskList) {
                 </button>`;
         } else if (userIsLead) {
             actionsHtml = `
-                <button class="btn btn-sm btn-link text-primary p-0 text-decoration-none" onclick="openEditTaskModal(${t.id})" title="Edit Task">
+                <button class="btn btn-sm btn-link text-primary p-0 text-decoration-none me-1" onclick="openEditTaskModal(${t.id})" title="Edit Task">
                     <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-sm btn-link text-danger p-0 text-decoration-none" onclick="promptDeleteTask(${t.id}, '${escapeAttr(t.title)}')" title="Delete Task">
+                    <i class="bi bi-trash"></i>
                 </button>`;
         } else if (userIsQC) {
             const qcStages = ['Ready For QC', 'Under QC / To Be Verify', 'QC Failed', 'Done'];

@@ -9,8 +9,8 @@ namespace EmployeeWorkFlowHub.Service.Interfaces
     {
         Task<ResultArgs> GetAllAsync(string userRole, int currentEmployeeId);
         Task<ResultArgs> GetByIdAsync(int id, string userRole, int currentEmployeeId);
-        Task<ResultArgs> CreateAsync(Project project, string userRole);
+        Task<ResultArgs> CreateAsync(Project project, string userRole, int currentEmployeeId);
         Task<ResultArgs> UpdateAsync(Project project, string userRole, int currentEmployeeId);
-        Task<ResultArgs> DeleteAsync(int id, string userRole);
+        Task<ResultArgs> DeleteAsync(int id, string userRole, int currentEmployeeId);
     }
 }

@@ -12,6 +12,6 @@ namespace EmployeeWorkFlowHub.Service.Interfaces
         Task<ResultArgs> CreateAsync(TaskItem task, string userRole, int currentEmployeeId);
         Task<ResultArgs> UpdateAsync(TaskItem task, string userRole, int currentEmployeeId);
         Task<ResultArgs> UpdateStatusAsync(int id, string status, string userRole, int currentEmployeeId);
-        Task<ResultArgs> DeleteAsync(int id, string userRole);
+        Task<ResultArgs> DeleteAsync(int id, string userRole, int currentEmployeeId);
     }
 }

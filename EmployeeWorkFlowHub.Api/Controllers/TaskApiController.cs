@@ -208,7 +208,7 @@ namespace EmployeeWorkFlowHub.Controllers.Api
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _taskService.DeleteAsync(id, CurrentUserRole);
+            var response = await _taskService.DeleteAsync(id, CurrentUserRole, CurrentEmployeeId);
             if (response.StatusCode == 403)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new { message = response.StatusMessage });
