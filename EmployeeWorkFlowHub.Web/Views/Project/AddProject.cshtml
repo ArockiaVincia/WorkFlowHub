@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "AddProject";
+}
+
+<div class="row justify-content-start">
+    <div class="col-md-9 col-lg-7">
+        <div class="card border shadow-sm rounded-3 p-3">
+            <div class="card-body p-2">
+                <h3 class="fw-bold text-dark mb-4">Add Project</h3>
+
+                <form id="addProjectPageForm" novalidate onsubmit="return false;">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="pageProjName" class="form-label fw-semibold text-dark">
+                                Project Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-lg custom-input" id="pageProjName" placeholder="Enter Project Name" maxlength="50" required />
+                            <div class="invalid-feedback" id="pageProjNameFeedback">Project Name is required.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageProjDept" class="form-label fw-semibold text-dark">
+                                Department <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-control-lg custom-input" id="pageProjDept" required>
+                                <option value="">(Select Department)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageProjDeptFeedback">Please select a department.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageProjManager" class="form-label fw-semibold text-dark">
+                                Project Manager <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-control-lg custom-input" id="pageProjManager" required>
+                                <option value="">(Select Project Manager)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageProjManagerFeedback">Please select a project manager.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageProjStatus" class="form-label fw-semibold text-dark">Status <span class="text-danger">*</span></label>
+                            <select class="form-select form-control-lg custom-input" id="pageProjStatus" required>
+                                <option value="">(Select Status)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageProjStatusFeedback">Status is required.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageProjStartDate" class="form-label fw-semibold text-dark">
+                                Start Date
+                            </label>
+                            <input type="date" class="form-control form-control-lg custom-input" id="pageProjStartDate" />
+                            <div class="invalid-feedback" id="pageProjStartDateFeedback">Please select a valid start date.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageProjEndDate" class="form-label fw-semibold text-dark">
+                                End Date
+                            </label>
+                            <input type="date" class="form-control form-control-lg custom-input" id="pageProjEndDate" />
+                            <div class="invalid-feedback" id="pageProjEndDateFeedback">End Date cannot be earlier than Start Date.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="pageProjTeamMembersBtn" class="form-label fw-semibold text-dark">
+                                Team Members <span class="text-danger">*</span>
+                            </label>
+                            <div class="dropdown position-relative">
+                                <button class="form-select form-control-lg custom-input text-start d-flex justify-content-between align-items-center" 
+                                        type="button" 
+                                        id="pageProjTeamMembersBtn" 
+                                        data-bs-toggle="dropdown" 
+                                        data-bs-auto-close="outside" 
+                                        aria-expanded="false">
+                                    <span id="pageProjTeamMembersText" class="text-truncate text-muted">(Select Team Members)</span>
+                                </button>
+                                <div class="dropdown-menu w-100 p-2 shadow border" id="pageProjTeamMembersMenu" style="max-height: 160px; overflow-y: auto; z-index: 1065;">
+                                    <div class="text-muted small px-2 py-1">Loading employees...</div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="pageProjTeamMembers" value="" />
+                            <div class="invalid-feedback d-block" id="pageProjMembersFeedback" style="display: none !important;">Please select at least one team member.</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-muted opacity-25" />
+
+                    <!-- Centered Action Buttons -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" id="btnSubmitAddProj" class="btn btn-primary px-4 fw-medium" onclick="submitAddProject()">
+                            Save
+                        </button>
+                        <a href="/Project/ViewProject" class="btn btn-secondary px-4 fw-medium">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/add-project.js" asp-append-version="true"></script>
+}

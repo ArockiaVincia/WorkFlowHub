@@ -1,0 +1,93 @@
+@{
+    ViewData["Title"] = "AddTask";
+}
+
+<div class="row justify-content-start">
+    <div class="col-md-9 col-lg-7">
+        <div class="card border shadow-sm rounded-3 p-3">
+            <div class="card-body p-2">
+                <h3 class="fw-bold text-dark mb-4">Add Task</h3>
+
+                <form id="addTaskPageForm" novalidate onsubmit="return false;">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="pageTaskTitle" class="form-label fw-semibold text-dark">
+                                Task Title <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-lg custom-input" id="pageTaskTitle" placeholder="Enter Task Title" maxlength="200" required />
+                            <div class="invalid-feedback" id="pageTitleFeedback">Task Title is required.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="pageTaskDesc" class="form-label fw-semibold text-dark">
+                                Description
+                            </label>
+                            <textarea class="form-control custom-input" id="pageTaskDesc" rows="3" placeholder="Enter Task Description" maxlength="500"></textarea>
+                            <div class="invalid-feedback" id="pageDescFeedback">Description cannot exceed 500 characters.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageTaskProject" class="form-label fw-semibold text-dark">
+                                Project <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-control-lg custom-input" id="pageTaskProject" onchange="onPageTaskProjectChange()" required>
+                                <option value="">(Select Project)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageProjFeedback">Please select a project.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageTaskEmp" class="form-label fw-semibold text-dark">
+                                Assigned Employee <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-control-lg custom-input" id="pageTaskEmp" required>
+                                <option value="">(Select Employee)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageEmpFeedback">Please select an employee.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="pageTaskPriority" class="form-label fw-semibold text-dark">Priority <span class="text-danger">*</span></label>
+                            <select class="form-select form-control-lg custom-input" id="pageTaskPriority" required>
+                                <option value="">(Select Priority)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pagePriorityFeedback">Please select a priority.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="pageTaskDueDate" class="form-label fw-semibold text-dark">
+                                Due Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" class="form-control form-control-lg custom-input" id="pageTaskDueDate" required />
+                            <div class="invalid-feedback" id="pageDueDateFeedback">Due date is required.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="pageTaskStatus" class="form-label fw-semibold text-dark">Status <span class="text-danger">*</span></label>
+                            <select class="form-select form-control-lg custom-input" id="pageTaskStatus" required>
+                                <option value="">(Select Status)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageStatusFeedback">Please select a status.</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-muted opacity-25" />
+
+                    <!-- Centered Action Buttons -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" id="btnSubmitAddTask" class="btn btn-primary px-4 fw-medium" onclick="submitAddTask()">
+                            Save
+                        </button>
+                        <a href="/Task/ViewTask" class="btn btn-secondary px-4 fw-medium">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/add-task.js" asp-append-version="true"></script>
+}

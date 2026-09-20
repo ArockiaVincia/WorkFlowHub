@@ -1,0 +1,144 @@
+@{
+    ViewData["Title"] = "viewTask";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold text-dark mb-0">Tasks</h3>
+    <button class="btn btn-primary align-items-center gap-2 px-3 py-2 fw-medium shadow-sm d-none" id="btnAddTask" onclick="openAddTaskModal()">
+        <i class="bi bi-plus-circle"></i>
+        <span>Add Task</span>
+    </button>
+</div>
+
+<!-- Filter Toolbar -->
+<div class="card border-0 shadow-sm rounded-2 mb-3">
+    <div class="card-body p-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-4 col-sm-6">
+                <label for="filterTaskProject" class="form-label small fw-semibold text-muted mb-1">Filter by Project</label>
+                <select id="filterTaskProject" class="form-select custom-input" onchange="applyTaskFilters()">
+                    <option value="">(Select Project)</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <label for="filterTaskStatus" class="form-label small fw-semibold text-muted mb-1">Filter by Status</label>
+                <select id="filterTaskStatus" class="form-select custom-input" onchange="applyTaskFilters()">
+                    <option value="">(Select Status)</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <label for="filterTaskPriority" class="form-label small fw-semibold text-muted mb-1">Filter by Priority</label>
+                <select id="filterTaskPriority" class="form-select custom-input" onchange="applyTaskFilters()">
+                    <option value="">(Select Priority)</option>
+                </select>
+            </div>
+            <div class="col-md-2 col-sm-6 d-flex align-items-end">
+                <button type="button" class="btn btn-outline-secondary w-100 mt-md-4" onclick="resetTaskFilters()">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 8-Column Kanban Board View (Full-Width, Zero-Scroll Responsive Grid) -->
+<div id="taskBoardView" class="kanban-board-container mb-4">
+    <div class="kanban-grid" id="kanbanGrid">
+        <div class="text-center py-4 text-muted small w-100"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading workflow stages...</div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow rounded-3 p-2">
+            <div class="modal-header border-0 pb-0 pt-3 px-3">
+                <h4 class="modal-title fw-bold text-dark" id="taskModalTitle">Add Task</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-3 pt-3 pb-2">
+                <form id="taskForm" novalidate onsubmit="return false;">
+                    <input type="hidden" id="taskId" value="0" />
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="taskTitle" class="form-label fw-semibold text-dark">Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control custom-input" id="taskTitle" placeholder="Enter Task Title" maxlength="200" required />
+                            <div class="invalid-feedback" id="taskTitleFeedback">Task Title is required.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="taskDesc" class="form-label fw-semibold text-dark">Description</label>
+                            <textarea class="form-control custom-input" id="taskDesc" rows="2" placeholder="Enter Task Description" maxlength="500"></textarea>
+                            <div class="invalid-feedback" id="taskDescFeedback">Description cannot exceed 500 characters.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="taskProjectId" class="form-label fw-semibold text-dark">Project <span class="text-danger">*</span></label>
+                            <select class="form-select custom-input" id="taskProjectId" onchange="onTaskProjectChange()" required>
+                                <option value="">(Select Project)</option>
+                            </select>
+                            <div class="invalid-feedback" id="taskProjectFeedback">Please select a project.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="taskEmpId" class="form-label fw-semibold text-dark">Assigned Employee <span class="text-danger">*</span></label>
+                            <select class="form-select custom-input" id="taskEmpId" required>
+                                <option value="">(Select Employee)</option>
+                            </select>
+                            <div class="invalid-feedback" id="taskEmpFeedback">Please select an employee.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="taskPriority" class="form-label fw-semibold text-dark">Priority <span class="text-danger">*</span></label>
+                            <select class="form-select custom-input" id="taskPriority" required>
+                                <option value="">(Select Priority)</option>
+                            </select>
+                            <div class="invalid-feedback" id="taskPriorityFeedback">Please select a priority.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="taskDueDate" class="form-label fw-semibold text-dark">Due Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control custom-input" id="taskDueDate" required />
+                            <div class="invalid-feedback" id="taskDueDateFeedback">Due date is required.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="taskStatus" class="form-label fw-semibold text-dark">Status <span class="text-danger">*</span></label>
+                            <select class="form-select custom-input" id="taskStatus" required>
+                                <option value="">(Select Status)</option>
+                            </select>
+                            <div class="invalid-feedback" id="taskStatusFeedback">Please select a status.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Centered Save & Cancel -->
+            <div class="modal-footer border-top justify-content-center px-3 pt-3 pb-3 gap-3">
+                <button type="button" class="btn btn-primary px-4 fw-medium" id="btnSaveTask" onclick="saveTask()">Save</button>
+                <button type="button" class="btn btn-secondary px-4 fw-medium" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteTaskModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow rounded-3 text-center p-3">
+            <div class="modal-body py-2">
+                <div class="text-danger mb-2"><i class="bi bi-exclamation-triangle-fill fs-1"></i></div>
+                <h5 class="fw-bold mb-2">Delete Task?</h5>
+                <p class="text-muted small mb-0">Are you sure you want to delete <span class="fw-bold text-dark" id="deleteTaskTitleText"></span>?</p>
+            </div>
+            <div class="d-flex justify-content-center gap-3 pt-3">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger btn-sm px-3" id="btnConfirmTaskDelete" onclick="confirmDeleteTask()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/task.js" asp-append-version="true"></script>
+}

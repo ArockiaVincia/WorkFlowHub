@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EmployeeWorkFlowHub.Api/EmployeeWorkFlowHub.Api.csproj" />
+  <Project Path="EmployeeWorkFlowHub.Web/EmployeeWorkFlowHub.Web.csproj" />
+</Solution>

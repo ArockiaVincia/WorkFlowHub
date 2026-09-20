@@ -1,0 +1,146 @@
+@{
+    ViewData["Title"] = "viewProject";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold text-dark mb-0">Projects</h3>
+    <button class="btn btn-primary align-items-center gap-2 px-3 py-2 fw-medium shadow-sm d-none" id="btnAddProject" onclick="openAddProjectModal()">
+        <i class="bi bi-plus-circle"></i>
+        <span>Add Project</span>
+    </button>
+</div>
+
+<div class="card border-0 shadow-sm rounded-2">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light border-bottom">
+                    <tr>
+                        <th style="width: 110px;" class="ps-4 fw-bold text-dark">Actions</th>
+                        <th class="fw-bold text-dark">Project Name</th>
+                        <th class="fw-bold text-dark">Department</th>
+                        <th class="fw-bold text-dark">Project Manager</th>
+                        <th class="fw-bold text-dark">Team Members</th>
+                        <th class="fw-bold text-dark">Start Date</th>
+                        <th class="fw-bold text-dark">End Date</th>
+                        <th style="width: 130px;" class="fw-bold text-dark">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="projectsTableBody">
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                            Loading projects...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="projectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow rounded-3 p-2">
+            <div class="modal-header border-0 pb-0 pt-3 px-3">
+                <h4 class="modal-title fw-bold text-dark" id="projModalTitle">Add Project</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-3 pt-3 pb-2">
+                <form id="projectForm" novalidate onsubmit="return false;">
+                    <input type="hidden" id="projectId" value="0" />
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="projectName" class="form-label fw-semibold text-dark">Project Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control custom-input" id="projectName" placeholder="Enter Project Name" maxlength="50" required />
+                            <div class="invalid-feedback" id="projNameFeedback">Project Name is required.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="projDeptId" class="form-label fw-semibold text-dark">Department <span class="text-danger">*</span></label>
+                            <select class="form-select custom-input" id="projDeptId" required>
+                                <option value="">(Select Department)</option>
+                            </select>
+                            <div class="invalid-feedback" id="projDeptFeedback">Please select a department.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="projManagerId" class="form-label fw-semibold text-dark">Project Manager <span class="text-danger">*</span></label>
+                            <select class="form-select custom-input" id="projManagerId" required>
+                                <option value="">(Select Project Manager)</option>
+                            </select>
+                            <div class="invalid-feedback" id="projManagerFeedback">Please select a project manager.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="projStatus" class="form-label fw-semibold text-dark">Status <span class="text-danger">*</span></label>
+                            <select class="form-select custom-input" id="projStatus" required>
+                                <option value="">(Select Status)</option>
+                            </select>
+                            <div class="invalid-feedback" id="projStatusFeedback">Status is required.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="projStartDate" class="form-label fw-semibold text-dark">Start Date</label>
+                            <input type="date" class="form-control custom-input" id="projStartDate" />
+                            <div class="invalid-feedback" id="projStartDateFeedback">Please select a valid start date.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="projEndDate" class="form-label fw-semibold text-dark">End Date</label>
+                            <input type="date" class="form-control custom-input" id="projEndDate" />
+                            <div class="invalid-feedback" id="projEndDateFeedback">End Date cannot be earlier than Start Date.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="projTeamMembersBtn" class="form-label fw-semibold text-dark">Team Members <span class="text-danger">*</span></label>
+                            <div class="dropdown position-relative">
+                                <button class="form-select custom-input text-start d-flex justify-content-between align-items-center" 
+                                        type="button" 
+                                        id="projTeamMembersBtn" 
+                                        data-bs-toggle="dropdown" 
+                                        data-bs-auto-close="outside" 
+                                        aria-expanded="false">
+                                    <span id="projTeamMembersText" class="text-truncate text-muted">(Select Team Members)</span>
+                                </button>
+                                <div class="dropdown-menu w-100 p-2 shadow border" id="projTeamMembersMenu" style="max-height: 160px; overflow-y: auto; z-index: 1065;">
+                                    <div class="text-muted small px-2 py-1">Loading employees...</div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="projTeamMembers" value="" />
+                            <div class="invalid-feedback d-block" id="projMembersFeedback" style="display: none !important;">Please select at least one team member.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Centered Save and Cancel Buttons -->
+            <div class="modal-footer border-top justify-content-center px-3 pt-3 pb-3 gap-3">
+                <button type="button" class="btn btn-primary px-4 fw-medium" id="btnSaveProject" onclick="saveProject()">Save</button>
+                <button type="button" class="btn btn-secondary px-4 fw-medium" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteProjModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow rounded-3 text-center p-3">
+            <div class="modal-body py-2">
+                <div class="text-danger mb-2"><i class="bi bi-exclamation-triangle-fill fs-1"></i></div>
+                <h5 class="fw-bold mb-2">Delete Project?</h5>
+                <p class="text-muted small mb-0">Are you sure you want to delete <span class="fw-bold text-dark" id="deleteProjNameText"></span>?</p>
+            </div>
+            <div class="d-flex justify-content-center gap-3 pt-3">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger btn-sm px-3" id="btnConfirmProjDelete" onclick="confirmDeleteProject()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/project.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "AddDepart";
+}
+
+<div class="row justify-content-start">
+    <div class="col-md-7 col-lg-5">
+        <div class="card border shadow-sm rounded-3 p-3">
+            <div class="card-body p-2">
+                <h3 class="fw-bold text-dark mb-4">Add Department</h3>
+
+                <form id="addDepartmentPageForm" novalidate onsubmit="return false;">
+                    <div class="mb-4">
+                        <label for="pageDepartmentName" class="form-label fw-semibold text-dark">
+                            Department Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" 
+                               class="form-control form-control-lg custom-input" 
+                               id="pageDepartmentName" 
+                               placeholder="Enter Department Name" 
+                               maxlength="50" 
+                               required />
+                        <div class="invalid-feedback" id="pageNameFeedback">
+                            Department Name is required.
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-muted opacity-25" />
+
+                    <!-- Centered Action Buttons -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" id="btnSubmitAddPage" class="btn btn-primary px-4 fw-medium" onclick="submitAddDepartment()">
+                            Save
+                        </button>
+                        <a href="/Department/ViewDepartment" class="btn btn-secondary px-4 fw-medium">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/add-department.js" asp-append-version="true"></script>
+}

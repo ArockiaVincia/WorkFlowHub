@@ -1,0 +1,97 @@
+@{
+    ViewData["Title"] = "AddEmployee";
+}
+
+<div class="row justify-content-start">
+    <div class="col-md-9 col-lg-7">
+        <div class="card border shadow-sm rounded-3 p-3">
+            <div class="card-body p-2">
+                <h3 class="fw-bold text-dark mb-4">Add Employee</h3>
+
+                <form id="addEmployeePageForm" novalidate onsubmit="return false;">
+                    <input type="hidden" id="pageEmpCode" />
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label for="pageFullName" class="form-label fw-semibold text-dark">
+                                Username / Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-lg custom-input" id="pageFullName" placeholder="Enter Username / Name" maxlength="50" required />
+                            <div class="invalid-feedback" id="pageNameFeedback">Username / Name is required.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageEmail" class="form-label fw-semibold text-dark">
+                                Email Address <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" class="form-control form-control-lg custom-input" id="pageEmail" placeholder="Enter Email Address" maxlength="150" required />
+                            <div class="invalid-feedback" id="pageEmailFeedback">Valid email address is required.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageDepartmentId" class="form-label fw-semibold text-dark">
+                                Department <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-control-lg custom-input" id="pageDepartmentId" required>
+                                <option value="">(Select Department)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageDeptFeedback">Please select a department.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageRole" class="form-label fw-semibold text-dark">
+                                Role <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-control-lg custom-input" id="pageRole" required>
+                                <option value="">(Select Role)</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageRoleFeedback">Please select a role.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageDesignation" class="form-label fw-semibold text-dark">
+                                Designation
+                            </label>
+                            <input type="text" class="form-control form-control-lg custom-input" id="pageDesignation" placeholder="Enter Designation" maxlength="50" />
+                            <div class="invalid-feedback" id="pageDesigFeedback">Designation cannot exceed 50 characters.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pagePassword" class="form-label fw-semibold text-dark">
+                                Password <span class="text-danger">*</span>
+                            </label>
+                            <input type="password" class="form-control form-control-lg custom-input" id="pagePassword" placeholder="Enter Password" maxlength="50" required />
+                            <div class="invalid-feedback" id="pagePasswordFeedback">Password is required.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="pageIsActive" class="form-label fw-semibold text-dark">Status <span class="text-danger">*</span></label>
+                            <select class="form-select form-control-lg custom-input" id="pageIsActive" required>
+                                <option value="">(Select Status)</option>
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                            <div class="invalid-feedback" id="pageActiveFeedback">Please select a status.</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-muted opacity-25" />
+
+                    <!-- Centered Action Buttons -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" id="btnSubmitAddEmp" class="btn btn-primary px-4 fw-medium" onclick="submitAddEmployee()">
+                            Save
+                        </button>
+                        <a href="/Employee/ViewEmployee" class="btn btn-secondary px-4 fw-medium">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/add-employee.js" asp-append-version="true"></script>
+}

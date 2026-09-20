@@ -1,0 +1,144 @@
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    string Token = Context?.Session?.GetString("Token") ?? "";
+    string UserName = Context?.Session?.GetString("UserName") ?? "";
+    string FullName = Context?.Session?.GetString("FullName") ?? "";
+    string Role = Context?.Session?.GetString("Role") ?? "";
+    int? EmployeeId = Context?.Session?.GetInt32("EmployeeId");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WorkFlow Hub</title>
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons (Local Offline) -->
+    <link rel="stylesheet" href="~/css/bootstrap-icons.css" asp-append-version="true" />
+    <!-- Custom Site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2">
+        <div class="container-fluid px-4">
+            <!-- Brand Logo & Name -->
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2 me-4" href="/">
+                <i class="bi bi-briefcase-fill text-primary fs-5"></i>
+                <span class="text-dark fs-5">WorkFlow Hub</span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
+                    <!-- Dashboard -->
+                    <li class="nav-item" id="navItemDashboard">
+                        <a class="nav-link text-secondary d-flex align-items-center gap-2 px-2" href="/">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <!-- Organization Dropdown (Manager only) -->
+                    <li class="nav-item dropdown" id="navItemOrg">
+                        <a class="nav-link dropdown-toggle text-secondary d-flex align-items-center gap-2 px-2" href="#" id="orgDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i>
+                            <span>Organization</span>
+                        </a>
+                        <ul class="dropdown-menu shadow-sm" aria-labelledby="orgDropdown">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/Department/ViewDepartment">
+                                    <i class="bi bi-diagram-2 text-muted"></i>
+                                    <span>Departments</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/Employee/ViewEmployee">
+                                    <i class="bi bi-people text-muted"></i>
+                                    <span>Employees</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Projects (Manager & Team Lead) -->
+                    <li class="nav-item" id="navItemProjects">
+                        <a class="nav-link text-secondary d-flex align-items-center gap-2 px-2" href="/Project/ViewProject">
+                            <i class="bi bi-folder"></i>
+                            <span id="navTextProjects">Projects</span>
+                        </a>
+                    </li>
+
+                    <!-- Tasks (All roles) -->
+                    <li class="nav-item" id="navItemTasks">
+                        <a class="nav-link text-secondary d-flex align-items-center gap-2 px-2" href="/Task/ViewTask">
+                            <i class="bi bi-check2-square"></i>
+                            <span id="navTextTasks">Tasks</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Authenticated User Profile & Logout -->
+                <div class="d-flex align-items-center gap-3 ms-auto py-1">
+                    <div class="d-flex align-items-center gap-2 text-dark">
+                        <i class="bi bi-person-circle fs-5 text-secondary"></i>
+                        <span class="fw-semibold small" id="navUsername">User</span>
+                    </div>
+                    <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" id="navLogoutBtn" onclick="logout()" title="Sign Out">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top-Right Alert/Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 2000;">
+        <div id="appToast" class="toast align-items-center text-white border-0 shadow-sm" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2" id="toastMessage">
+                    <i id="toastIcon" class="bi bi-shield-exclamation fs-5"></i>
+                    <span id="toastText">Error loading departments:</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Content Container -->
+    <div class="container-fluid px-4 py-4">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer py-3 text-center bg-white border-top mt-auto">
+        <div class="container-fluid">
+            <span class="text-secondary small">
+                &copy; 2026 - WorkFlow Hub. All rights reserved.
+            </span>
+        </div>
+    </footer>
+
+    <!-- Session Hidden Fields -->
+    <input type="hidden" id="hdnAPIBaseURL" value="@Configuration["ApiSettings:BaseUrl"]" />
+    <input type="hidden" id="hdtoken" value="@Token" />
+    <input type="hidden" id="hdUserRole" value="@Role" />
+    <input type="hidden" id="hdLoginUsername" value="@UserName" />
+    <input type="hidden" id="hdLoginFullName" value="@FullName" />
+    <input type="hidden" id="hdEmployeeId" value="@EmployeeId" />
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

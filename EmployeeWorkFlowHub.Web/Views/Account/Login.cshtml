@@ -1,0 +1,79 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = null;
+    ViewData["Title"] = "Sign In - Employee WorkFlow Hub";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons (Local Offline) -->
+    <link rel="stylesheet" href="~/css/bootstrap-icons.css" asp-append-version="true" />
+    <!-- Custom Site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center min-vh-100 p-3">
+
+    <div class="card shadow-sm border rounded-3 p-4 bg-white" style="max-width: 400px; width: 100%;">
+        <!-- Brand Header -->
+        <div class="text-center mb-4">
+            <i class="bi bi-briefcase-fill text-primary" style="font-size: 2.5rem;"></i>
+            <h4 class="fw-bold text-dark mt-2 mb-1">WorkFlow Hub</h4>
+            <p class="text-muted small mb-0">Sign in to your account</p>
+        </div>
+
+        <!-- Validation / Error Alert -->
+        <div id="loginAlert" class="alert alert-danger d-flex align-items-center gap-2 small py-2 mb-3" style="display: none !important;" role="alert">
+            <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+            <div id="loginAlertText">Invalid username or password.</div>
+        </div>
+
+        <form id="loginForm" autocomplete="off" onsubmit="return false;">
+            <!-- Username -->
+            <div class="mb-3">
+                <label for="txtUsername" class="form-label small fw-semibold text-dark">
+                    Username <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" id="txtUsername" name="username" placeholder="Enter username" autofocus required />
+                <div class="invalid-feedback" id="usernameError">Please enter your username.</div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="txtPassword" class="form-label small fw-semibold text-dark">
+                    Password <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="txtPassword" name="password" placeholder="Enter password" required />
+                    <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword" title="Toggle password visibility">
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+                <div class="invalid-feedback" id="passwordError">Please enter your password.</div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-medium" id="btnLogin">
+                    <span class="spinner-border spinner-border-sm d-none" id="loginSpinner" role="status" aria-hidden="true"></span>
+                    <i class="bi bi-box-arrow-in-right" id="loginIcon"></i>
+                    <span id="loginBtnText">Sign In</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <input type="hidden" id="hdnAPIBaseURL" value="@Configuration["ApiSettings:BaseUrl"]" />
+
+    <!-- jQuery & Bootstrap 5 JS -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Auth & Site Scripts -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/login.js" asp-append-version="true"></script>
+</body>
+</html>

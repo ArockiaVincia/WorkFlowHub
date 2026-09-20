@@ -1,0 +1,84 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Dashboard Heading (Smaller Header) -->
+<h3 class="fw-bold text-dark mb-4">Dashboard</h3>
+
+<div class="row g-3">
+    <!-- Departments Stat Card (Manager Only) -->
+    <div class="col-md-6 col-lg-3" id="cardDashDept">
+        <div class="card shadow-sm border h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-uppercase fw-semibold small text-muted">Departments</span>
+                    <i class="bi bi-building fs-4 text-primary"></i>
+                </div>
+                <div class="fs-2 fw-bold text-dark mb-2" id="dashDeptCount">0</div>
+                <div class="pt-2 border-top">
+                    <a href="/Department/ViewDepartment" class="text-decoration-none small text-primary fw-medium">
+                        View Departments &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employees Stat Card (Manager Only) -->
+    <div class="col-md-6 col-lg-3" id="cardDashEmp">
+        <div class="card shadow-sm border h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-uppercase fw-semibold small text-muted">Employees</span>
+                    <i class="bi bi-people fs-4 text-success"></i>
+                </div>
+                <div class="fs-2 fw-bold text-dark mb-2" id="dashEmpCount">0</div>
+                <div class="pt-2 border-top">
+                    <a href="/Employee/ViewEmployee" class="text-decoration-none small text-success fw-medium">
+                        View Employees &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projects Stat Card (Manager & Team Lead) -->
+    <div class="col-md-6 col-lg-3" id="cardDashProj">
+        <div class="card shadow-sm border h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-uppercase fw-semibold small text-muted" id="dashProjTitle">Projects</span>
+                    <i class="bi bi-folder fs-4 text-warning"></i>
+                </div>
+                <div class="fs-2 fw-bold text-dark mb-2" id="dashProjCount">0</div>
+                <div class="pt-2 border-top">
+                    <a href="/Project/ViewProject" class="text-decoration-none small text-warning fw-medium">
+                        <span id="dashProjLinkText">View Projects</span> &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks Stat Card (All Roles) -->
+    <div class="col-md-6 col-lg-3" id="cardDashTask">
+        <div class="card shadow-sm border h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-uppercase fw-semibold small text-muted" id="dashTaskTitle">Tasks</span>
+                    <i class="bi bi-check2-square fs-4 text-info"></i>
+                </div>
+                <div class="fs-2 fw-bold text-dark mb-2" id="dashTaskCount">0</div>
+                <div class="pt-2 border-top">
+                    <a href="/Task/ViewTask" class="text-decoration-none small text-info fw-medium">
+                        <span id="dashTaskLinkText">View Tasks</span> &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/home.js" asp-append-version="true"></script>
+}
